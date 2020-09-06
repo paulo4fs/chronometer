@@ -1,6 +1,6 @@
 ## Chronometer App
 
-### 🚀 About the project
+### ⏱ About the project
 Project created during a course to have a basic understanding of React Native using the Android Studio emulator.
 
 ### 🏃 Installation
