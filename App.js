@@ -10,14 +10,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timer: {
-    marginTop: -160,
+    marginTop: -145,
     color: 'white',
-    fontSize: 65,
+    fontSize: 45,
     fontWeight: 'bold',
   },
   btnArea: {
     flexDirection: 'row',
-    marginTop: 70,
+    marginTop: 80,
     height: 40,
   },
   btn: {
@@ -42,47 +42,37 @@ const styles = StyleSheet.create({
   },
 });
 export default function App() {
-  let [minute, setMinute] = useState(0);
-  let [second, setSecond] = useState(50);
+  let [second, setSecond] = useState(0);
   let [active, setActive] = useState(false);
-  let [lastTime, setLastTime] = useState([0, 0]);
+  let [lastTime, setLastTime] = useState(0);
 
   useEffect(() => {
-    let timeControl = setInterval(() => {
-      const minutos = minute;
-      const segundos = second;
-      if (segundos < 59) {
-        setSecond(segundos + 1);
-      } else {
-        setMinute(minutos + 1);
-        setSecond(0);
-      }
-    }, 1000);
-    if (!active) {
+    let timeControl = null;
+    if (active) {
+      timeControl = setInterval(() => {
+        setSecond(() => second + 1);
+      }, 1000);
+    } else {
       clearInterval(timeControl);
     }
     return () => clearInterval(timeControl);
-  }, [active, minute, second]);
+  }, [active, second]);
 
   function restartHandler() {
-    setLastTime([minute, second]);
+    setLastTime(second);
     setSecond(0);
-    setMinute(0);
     setActive(false);
   }
 
   function startHandler() {
     setActive(!active);
-    setLastTime([0, 0]);
+    setLastTime(0);
   }
 
   return (
     <View style={styles.background}>
       <Image source={cronometro} />
-      <Text style={styles.timer}>
-        {minute < 10 ? `0${minute}` : minute}:
-        {second < 10 ? `0${second}` : second}
-      </Text>
+      <Text style={styles.timer}>{second.toFixed(0)}</Text>
       <View style={styles.btnArea}>
         <TouchableOpacity style={styles.btn} onPress={startHandler}>
           <Text style={styles.btnText}>{!active ? 'Vai' : 'Parar'}</Text>
@@ -92,9 +82,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <Text style={styles.lastText}>
-        {lastTime[0] === 0 && lastTime[1] === 0
-          ? ''
-          : `O último registro foi: ${lastTime[0]< 10 ? `0${lastTime[0]}` : lastTime[0]}:${lastTime[1]< 10 ? `0${lastTime[1]}` : lastTime[1]}`}
+        {lastTime !== 0 ? `O último registro foi: ${lastTime.toFixed(0)}` : ''}
       </Text>
     </View>
   );
